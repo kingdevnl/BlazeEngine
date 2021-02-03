@@ -12,11 +12,12 @@ namespace Blaze {
     private:
         std::vector<unsigned int> vbos = {};
         std::vector<float> positions;
+        std::vector<int> indices;
         int vertexCount = 0;
         unsigned int vao = -1;
 
     public:
-        Mesh(const std::vector<float> &positions);
+        explicit Mesh(std::vector<float> positions, std::vector<int> indices);
 
         void Create();
         void Render();

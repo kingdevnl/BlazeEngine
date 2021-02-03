@@ -34,34 +34,68 @@ class MyScene : public Blaze::Scene {
         vertexStream.close();
         fragmentStream.close();
 
-        mesh = std::make_shared<Blaze::Mesh>(std::vector<float>{
-                -1, -1, -2.5f,
-                1, -1, -2.5f,
-                0, 1, -2.5f,
-        });
+        mesh = std::make_shared<Blaze::Mesh>(
+                std::vector<float>{
+                        // VO
+                        -0.5f,  0.5f,  0.5f,
+                        // V1
+                        -0.5f, -0.5f,  0.5f,
+                        // V2
+                        0.5f, -0.5f,  0.5f,
+                        // V3
+                        0.5f,  0.5f,  0.5f,
+                        // V4
+                        -0.5f,  0.5f, -0.5f,
+                        // V5
+                        0.5f,  0.5f, -0.5f,
+                        // V6
+                        -0.5f, -0.5f, -0.5f,
+                        // V7
+                        0.5f, -0.5f, -0.5f,
+                }, std::vector<int>{
+                        // Front face
+                        0, 1, 3, 3, 1, 2,
+                        // Top Face
+                        4, 0, 3, 5, 4, 3,
+                        // Right face
+                        3, 2, 7, 5, 3, 7,
+                        // Left face
+                        6, 1, 0, 6, 0, 4,
+                        // Bottom face
+                        2, 1, 6, 2, 6, 7,
+                        // Back face
+                        7, 6, 4, 7, 4, 5,
+                });
         mesh->Create();
 
 
-
-
     }
+
+    glm::vec3 position = glm::vec3(0, 0, -5);
+    glm::vec3 rotation = glm::vec3(0, 0, 0);
+    float scale = 1.0f;
 
     void Update(float dt) override {
         Scene::Update(dt);
+        rotation.x += dt * 15;
+        rotation.y += dt * 15;
 
-        glRotatef(dt * 5, 0, 0, 1);
 
     }
+
 
     void Render() override {
         Scene::Render();
         shader->Bind();
 
 
-        shader->UploadMat4(std::string("projectionMatrix"),  Blaze::Utils::Transformation::getDefaultProjectionMatrix());
+        shader->UploadMat4(std::string("projectionMatrix"), Blaze::Utils::Transformation::getDefaultProjectionMatrix());
+        shader->UploadMat4(std::string("worldMatrix"),
+                           Blaze::Utils::Transformation::getWorldMatrix(position, rotation, scale));
 
+        glEnable(GL_DEPTH_TEST);
         mesh->Render();
-
+        glDisable(GL_DEPTH_TEST);
 
         shader->Unbind();
     }

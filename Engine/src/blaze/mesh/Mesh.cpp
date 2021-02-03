@@ -5,8 +5,10 @@
 #include "Mesh.h"
 #include <gl/glew.h>
 
+#include <utility>
+
 namespace Blaze {
-    Mesh::Mesh(const std::vector<float> &positions) : positions(positions) {}
+    Mesh::Mesh(std::vector<float> positions, std::vector<int> indices) : positions(std::move(positions)), indices(std::move(indices)) {}
 
     void Mesh::Create() {
         glGenVertexArrays(1, &vao);
@@ -25,7 +27,14 @@ namespace Blaze {
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(float), &positions[0], GL_STATIC_DRAW);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-        vertexCount = positions.size() / 3;
+
+
+
+        vbo = makeVBO();
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(int), &indices[0], GL_STATIC_DRAW);
+
+        vertexCount = indices.size();
 
     }
 
@@ -39,8 +48,12 @@ namespace Blaze {
     void Mesh::Render() {
         glBindVertexArray(vao);
         glEnableVertexAttribArray(0);
-        glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+        glEnableVertexAttribArray(1);
+
+        glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, NULL);
+
         glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(1);
         glBindVertexArray(0);
     }
 
