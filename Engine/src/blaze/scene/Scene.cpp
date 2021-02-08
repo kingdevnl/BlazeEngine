@@ -5,7 +5,7 @@
 #include "../render/mesh/Mesh.h"
 #include "../render/shader/Shader.h"
 #include "../render/math/Transformation.h"
-
+#include "../render/renderer/Renderer.h"
 namespace Blaze
 {
 	Scene::Scene()
@@ -53,11 +53,12 @@ namespace Blaze
 		{
 			auto const meshComponent = registry.get<Components::MeshComponent>(e);
 			auto& transformComponent = registry.get<Components::TransformComponent>(e);
-			
-			
-			meshComponent.shader->SetMat4(std::string("worldMatrix"),
-			                              Render::Math::GetWorldMatrix(transformComponent));
-			meshComponent.mesh->Render();
+
+
+			Render::Renderer::Submit(meshComponent.shader, meshComponent.mesh, 
+				Render::Math::GetWorldMatrix(transformComponent));
+		
+
 		
 		}
 	}

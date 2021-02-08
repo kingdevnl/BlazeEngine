@@ -116,4 +116,19 @@ namespace Blaze::Render
 
 		return std::make_shared<Mesh>(positions, textCoords, indices);
 	}
+
+	bool Mesh::HasTexture()
+	{
+		return texture != nullptr;
+	}
+
+	Ref<Texture> Mesh::GetTexture()
+	{
+		return texture;
+	}
+
+	void Mesh::SetTexture(Ref<Texture> texture)
+	{
+		this->texture = texture;
+	}
 }

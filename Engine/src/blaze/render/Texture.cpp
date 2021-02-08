@@ -24,6 +24,8 @@ namespace Blaze::Render
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 		stbi_image_free(pixels);
 		spdlog::info("Created texture {} {}", file, textureID);
+
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	void Texture::Bind()

@@ -74,10 +74,14 @@ public:
 			out vec4 color;
 			uniform vec3 iColor;
 			uniform sampler2D texture_sampler;
+			uniform bool hasTexture;
 
 			void main() {
-				color = texture(texture_sampler, fTextCoord);
-				//color = vec4(iColor.x+fPos.x+0.5, 0.5, iColor.y+fPos.y+0.5, 1);
+				if(hasTexture) {
+					color = texture(texture_sampler, fTextCoord);					
+				} else {
+					color = vec4(iColor.x+fPos.x+0.5, 0.5, iColor.y+fPos.y+0.5, 1);
+				}	
 			}
 		)")
 	);
@@ -88,13 +92,15 @@ public:
 
 	void Setup() override
 	{
+		mesh->SetTexture(texture);
+		
 		spdlog::info("Sandbox::MyLayer::Setup()");
 		std::shared_ptr<Scene> scene = App::GetApp()->currentScene;
 
 		{
 			auto entity = scene->CreateEntity();
-			entity.AddComponent<Components::MeshComponent>(mesh, shader);
-
+			 entity.AddComponent<Components::MeshComponent>(mesh, shader);
+		
 			auto& transform = entity.GetComponent<Components::TransformComponent>();
 			transform.position.z = -5;
 			transform.position.x = -2;
@@ -134,12 +140,9 @@ public:
 	void OnRender() override
 	{
 		glEnable(GL_DEPTH_TEST);
-		shader->Bind();
-		shader->SetMat4(std::string("projectionMatrix"), Math::GetProjectionMatrix());
-
-		texture->Bind();
+		
 		Layer::OnRender();
-		shader->Unbind();
+		
 		glDisable(GL_DEPTH_TEST);
 	}
 
