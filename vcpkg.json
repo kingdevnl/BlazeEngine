@@ -1,0 +1,13 @@
+{
+  "name": "blaze",
+  "version-string": "1.0-dev",
+  "dependencies": [
+    "spdlog",
+    "glfw3",
+    "glew",
+    "glm",
+    "entt",
+    "assimp",
+    "stb"
+  ]
+}
